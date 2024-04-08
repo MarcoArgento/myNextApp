@@ -40,6 +40,25 @@
   --card-border-rgb: 131, 134, 135;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
+.access {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 16%;
+  margin-bottom: auto;
+  border: 1px solid black;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;

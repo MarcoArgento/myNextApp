@@ -1,0 +1,3 @@
+### GET USERS
+
+GET http://localhost:3000/api/Add-users?email=${email}&name=${name}
