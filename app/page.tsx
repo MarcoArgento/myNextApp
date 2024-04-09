@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [users, setUsers] = useState({});
+  const [visible, setVisible] = useState(false);
 
   async function addUser(email: string, name: string) {
     debugger;
@@ -28,42 +30,66 @@ export default function Home() {
     else alert("Indirizzo email non valido");
   }
 
-  /*  async function showUser() {
+  async function showUser() {
     try {
-      const request = new Request(`http://localhost:3000/api/Show-Users`, {
+      const request = await fetch(`http://localhost:3000/api/Show-Users`, {
         method: "GET",
       });
+      //const response = await fetch(request);
+      const data = await request.json();
+      setUsers(data);
     } catch (error) {
       console.error("errore");
     }
-  }*/
+    console.log(users);
+  }
+
+  useEffect(() => {
+    showUser();
+  }, []);
 
   return (
-    <div className="access">
-      <input
-        type="text"
-        placeholder="Inserisci la tua email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Scrivi il tuo nome"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-      />
-      <button
-        type="button"
-        onClick={() => {
-          addUser(email, name);
-          setName("");
-          setEmail("");
-        }}
-        disabled={email === "" || name === ""}
-      >
-        AGGIUNGI
-      </button>
-      <button type="button">VISUALIZZA UTENTI</button>
-    </div>
+    <>
+      <div className="access">
+        <input
+          type="text"
+          placeholder="Inserisci la tua email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Scrivi il tuo nome"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => {
+            addUser(email, name);
+            setName("");
+            setEmail("");
+          }}
+          disabled={email === "" || name === ""}
+        >
+          AGGIUNGI
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setVisible(!visible);
+          }}
+        >
+          VISUALIZZA UTENTI
+        </button>
+      </div>
+      {visible && (
+        <div>
+          {users.user.rows.map((element) => (
+            <p>{element.email}</p>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
