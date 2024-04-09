@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+interface user {
+  email: string;
+  name: string;
+}
+
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState<Array<user>>([]);
   const [visible, setVisible] = useState(false);
 
   async function addUser(email: string, name: string) {
@@ -35,9 +40,8 @@ export default function Home() {
       const request = await fetch(`http://localhost:3000/api/Show-Users`, {
         method: "GET",
       });
-      //const response = await fetch(request);
       const data = await request.json();
-      setUsers(data);
+      setUsers(data.user.rows);
     } catch (error) {
       console.error("errore");
     }
@@ -85,7 +89,7 @@ export default function Home() {
       </div>
       {visible && (
         <div>
-          {users.user.rows.map((element) => (
+          {users.map((element) => (
             <p>{element.email}</p>
           ))}
         </div>
