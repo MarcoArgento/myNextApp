@@ -12,6 +12,7 @@ export default function Home() {
   const [name, setName] = useState<string>("");
   const [users, setUsers] = useState<Array<user>>([]);
   const [visible, setVisible] = useState(false);
+  const [upd, setUpd] = useState(false);
 
   async function addUser(email: string, name: string) {
     debugger;
@@ -48,35 +49,58 @@ export default function Home() {
     console.log(users);
   }
 
+  async function updUser(email: string, name: string) {
+    try {
+      const request = await fetch(
+        `http://localhost:3000/api/updateUsers?email=${email}&name=${name}`,
+        {
+          method: "PUT",
+        }
+      );
+    } catch (error) {
+      console.error("errore");
+    }
+  }
+
   useEffect(() => {
     showUser();
   }, []);
 
   return (
     <>
+      <button type="button" onClick={() => setUpd(!upd)}>
+        {upd ? "AGGIUNGI" : "AGGIORNA"}{" "}
+      </button>
       <div className="access">
         <input
           type="text"
-          placeholder="Inserisci la tua email"
+          placeholder={
+            upd ? "Inserisci email da aggiornare" : "Inserisci la tua email"
+          }
+          disabled={upd}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Scrivi il tuo nome"
+          placeholder={
+            upd ? "Inserisci nome da aggiornare" : "Scrivi il tuo nome"
+          }
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
         <button
           type="button"
           onClick={() => {
-            addUser(email, name);
+            if (upd) updUser(email, name);
+            else addUser(email, name);
+            showUser();
             setName("");
             setEmail("");
           }}
           disabled={email === "" || name === ""}
         >
-          AGGIUNGI
+          {upd ? "MODIFICA" : "AGGIUNGI"}
         </button>
         <button
           type="button"
@@ -88,9 +112,43 @@ export default function Home() {
         </button>
       </div>
       {visible && (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "400px",
+            marginTop: "30px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <b>EMAIL</b>
+            <b>NOME</b>
+          </div>
           {users.map((element) => (
-            <p>{element.email}</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "12px",
+                width: "400px",
+              }}
+              onClick={() => {
+                if (upd) {
+                  setEmail(element.email);
+                  setName(element.name);
+                }
+              }}
+              key={element.email}
+            >
+              <p>{element.email}</p>
+              <p>{element.name}</p>
+            </div>
           ))}
         </div>
       )}
